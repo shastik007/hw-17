@@ -1,35 +1,38 @@
 import { useState } from 'react'
 import './ExpenseForm.css'
 
-
-// грубо говоря , этот компонент служит для сборки данных от userа и создания объекта из данных которые были собраны 
+// грубо говоря , этот компонент служит для сборки данных от userа и создания объекта из данных которые были собраны
 
 const ExpenseForm = (props) => {
-	const [title, setTitle] = useState('')// state для изменения value input , (для получения данных с помощью to way data binding)
+	const [title, setTitle] = useState('') // state для изменения value input , (для получения данных с помощью to way data binding)
 	const [amount, setAmount] = useState('')
 	const [date, setDate] = useState('')
 
-	const titleChangeHandler = (event) => { // function для получения тайтла из инпута
+	const titleChangeHandler = (event) => {
+		// function для получения тайтла из инпута
 		setTitle(event.target.value) // function для добовления полученнного тайтла в state
 	}
 
-	const amountChangeHandler = (event) => { // function для получениия количестоа (или цены)
+	const amountChangeHandler = (event) => {
+		// function для получениия количестоа (или цены)
 		setAmount(event.target.value) // function для добовления полученнной цены
 	}
 
-	const dateChangeHandler = (event) => { // function для получения даты из input date
+	const dateChangeHandler = (event) => {
+		// function для получения даты из input date
 		setDate(event.target.value) // function для добовления полученной даты
 	}
 
-	const submitHandler = (event) => { // function для submit (когда происходит сабмит все состояния Input внутри формы собираються в объект и происходит поднятия состояния )
+	const submitHandler = (event) => {
+		// function для submit (когда происходит сабмит все состояния Input внутри формы собираються в объект и происходит поднятия состояния )
 		event.preventDefault()
-    const expensesData = {
-        title : title,
-        amount : Number(amount),
-        date : new Date(date),
-    }
-    // console.log(expensesData);
-    props.onSaveExpensesData(expensesData) // это функция которая взято из пропсов служит для поднятия данных материнский компонент
+		const expensesData = {
+			title: title,
+			amount: Number(amount),
+			date: new Date(date),
+		}
+		// console.log(expensesData);
+		props.onSaveExpensesData(expensesData) // это функция которая взято из пропсов служит для поднятия данных материнский компонент
 	}
 
 	return (
@@ -42,7 +45,7 @@ const ExpenseForm = (props) => {
 						type='text'
 						value={title}
 						onChange={titleChangeHandler}
-            size={10}
+						size={10}
 					/>
 				</div>
 				<div className='new-expense__control'>
@@ -64,11 +67,11 @@ const ExpenseForm = (props) => {
 						min='2022-01-01'
 						value={date}
 						onChange={dateChangeHandler}
-            
 					/>
 				</div>
 			</div>
 			<div className='new-expense__actions'>
+				<button onClick={props.hideForm}>cancel</button>
 				<button type='submit'>Add Expense</button>
 			</div>
 		</form>
