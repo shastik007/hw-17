@@ -1,45 +1,82 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Expenses from './components/Expenses/Expenses'
 import NewExpenses from './components/NewExpenses/NewExpenses'
 
 const INIT_DATA = [
-	{
-		id: 'e1',
-		title: 'Toilet Paper',
-		amount: 94.12,
-		date: new Date(2022, 7, 14),
-	},
-	{ id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
-	{
-		id: 'e3',
-		title: 'Car Insurance',
-		amount: 294.67,
-		date: new Date(2023, 2, 28),
-	},
-	{
-		id: 'e4',
-		title: 'New Desk (Wooden)',
-		amount: 450,
-		date: new Date(2024, 5, 12),
-	},
+	// {
+	// 	id: 'e1',
+	// 	title: 'Toilet Paper',
+	// 	amount: 94.12,
+	// 	date: new Date(2022, 7, 14),
+	// },
+	// {
+	// 	id: 'e3',
+	// 	title: 'Car Insurance',
+	// 	amount: 294.67,
+	// 	date: new Date(2023, 2, 28),
+	// },
+	// {
+	// 	id: 'e4',
+	// 	title: 'New Desk (Wooden)',
+	// 	amount: 450,
+	// 	date: new Date(2024, 5, 12),
+	// },
 ] // Это массив который будет отоброжаться по умолчанию
 
 // этот компонент получает данные от дочерних компонентов и добовляет его в свой пропс (точнее в массив чтоб в дольнейшем сообщать браузеру что если стейт обновиться реакту нужно обновляться)
 const App = () => {
-	const [expenses, setExpenses] = useState(INIT_DATA) //стейт который содержит default ные значения но в дольнейшем этот стейт будет обновлять список (коротко говоря стейт который товечает за  отоброжения данных которые в массиве и которые присоеденяться в массив  )
+	const [expenses, setExpenses] = useState(INIT_DATA)
+	const [loading, setLoading] = useState(false)
 
-	const NewExpensesData = (newData) => {
-		setExpenses((prevExpenses) => {
-			return [...prevExpenses, newData]
-		})
+	//стейт который содержит default ные значения но в дольнейшем этот стейт будет обновлять список (коротко говоря стейт который товечает за  отоброжения данных которые в массиве и которые присоеденяться в массив  )
+	const GetData = useCallback(async () => {
+		setLoading(true)
+		const response = await fetch(
+			'https://expense-tracker-f2bd2-default-rtdb.firebaseio.com/item.json',
+		)
+		const data = await response.json()
+
+		let loadingData = []
+
+		for (const key in data) {
+			loadingData.push({
+				id: data[key].id,
+				title: data[key].title,
+				amount: data[key].amount,
+				date: new Date(data[key].date),
+			})
+		}
+		console.log(loadingData)
+		setExpenses(loadingData)
+		setLoading(false)
+	}, [])
+
+	useEffect(() => {
+		GetData()
+	}, [GetData])
+
+	const NewExpensesData = async (newData) => {
+		const response = await fetch(
+			'https://expense-tracker-f2bd2-default-rtdb.firebaseio.com/item.json',
+			{
+				method: 'POST',
+				body: JSON.stringify(newData),
+				Headers: {
+					'Content-type': 'application/json',
+				},
+			},
+		)
+		const result = await response.json()
+		GetData()
+		console.log(result)
 	} // функция которая получает данные из newExpenses и добовляет его в стейт (expenses) с помошью функции (setExpenses) стейта который обновляет стейт(сообщает реакт что стейт обновился) она получает данные с помошью поднятия данных(lifting up )
 
 	return (
 		<div>
 			<NewExpenses newData={NewExpensesData} />{' '}
 			{/*тут мы отдаем с помощью пропсов функция которая поднимает данные */}
-			<Expenses items={expenses} />{' '}
+			<Expenses loading={loading} items={expenses} />{' '}
 			{/* тут мы отдаем стейт для дольнейшей обработки данных */}
 		</div>
 	)

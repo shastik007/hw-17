@@ -27,6 +27,7 @@ const Expenses = (props) => {
 			/>
 			<ExpensesChart filteredYear={filteredYear} expenses={filteredExpenses} allExpenses={props.items} />
 			<ExpensesList
+			    loading={props.loading}
 				expenses={props.items}
 				filteredExpenses={filteredExpenses}
 				filteredYear={filteredYear}

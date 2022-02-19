@@ -5,7 +5,7 @@ import HideExpenseForm from './HideExpenseForm'
 
 // этот компонен делает update данных которые пришли в него от дочерних элементов
 const NewExpenses = (props) => {
-	const [toggle, setToggle] = useState(false)
+	const [toggle, setToggle] = useState(true)
 	const SaveExpensesDataHandler = (enteredExpensesData) => {
 		const expensesData = {
 			...enteredExpensesData,
