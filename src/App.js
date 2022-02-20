@@ -28,28 +28,37 @@ const INIT_DATA = [
 const App = () => {
 	const [expenses, setExpenses] = useState(INIT_DATA)
 	const [loading, setLoading] = useState(false)
+	const [succsesAlert, setSuccsesAlert] = useState(null)
+	const [errorAlert, setErrorAlert] = useState(null)
 
 	//стейт который содержит default ные значения но в дольнейшем этот стейт будет обновлять список (коротко говоря стейт который товечает за  отоброжения данных которые в массиве и которые присоеденяться в массив  )
 	const GetData = useCallback(async () => {
 		setLoading(true)
-		const response = await fetch(
-			'https://expense-tracker-f2bd2-default-rtdb.firebaseio.com/item.json',
-		)
-		const data = await response.json()
+		try {
+			const response = await fetch(
+				'https://expense-tracker-f2bd2-default-rtdb.firebaseio.com/item.json',
+			)
+			if (!response.ok) {
+				return new Error('somthing went wrong')
+			}
+			const data = await response.json()
 
-		let loadingData = []
+			let loadingData = []
 
-		for (const key in data) {
-			loadingData.push({
-				id: data[key].id,
-				title: data[key].title,
-				amount: data[key].amount,
-				date: new Date(data[key].date),
-			})
+			for (const key in data) {
+				loadingData.push({
+					id: data[key].id,
+					title: data[key].title,
+					amount: data[key].amount,
+					date: new Date(data[key].date),
+				})
+			}
+
+			setExpenses(loadingData)
+			setLoading(false)
+		} catch (error) {
+			setErrorAlert(error.message)
 		}
-		console.log(loadingData)
-		setExpenses(loadingData)
-		setLoading(false)
 	}, [])
 
 	useEffect(() => {
