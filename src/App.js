@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
-
 import Expenses from './components/Expenses/Expenses'
 import NewExpenses from './components/NewExpenses/NewExpenses'
+import SuccsesAlert from './components/UI/SuccsesAlert'
+import ErrorAlert from './components/UI/ErrorAlert'
 
 const INIT_DATA = [
 	// {
@@ -78,12 +79,17 @@ const App = () => {
 		)
 		const result = await response.json()
 		GetData()
+		setSuccsesAlert({ message: 'data added successfully' })
 		console.log(result)
-	} // функция которая получает данные из newExpenses и добовляет его в стейт (expenses) с помошью функции (setExpenses) стейта который обновляет стейт(сообщает реакт что стейт обновился) она получает данные с помошью поднятия данных(lifting up )
+	}
+
+	// функция которая получает данные из newExpenses и добовляет его в стейт (expenses) с помошью функции (setExpenses) стейта который обновляет стейт(сообщает реакт что стейт обновился) она получает данные с помошью поднятия данных(lifting up )
 
 	return (
 		<div>
-			<NewExpenses newData={NewExpensesData} />{' '}
+			{succsesAlert && <SuccsesAlert succsesAlert={succsesAlert} setSuccsesAlert={setSuccsesAlert} />}
+			{errorAlert && <ErrorAlert errorAlert={errorAlert} setErrorAlert={setErrorAlert}/>}
+			<NewExpenses newData={NewExpensesData} />
 			{/*тут мы отдаем с помощью пропсов функция которая поднимает данные */}
 			<Expenses loading={loading} items={expenses} />{' '}
 			{/* тут мы отдаем стейт для дольнейшей обработки данных */}
