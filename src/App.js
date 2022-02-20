@@ -31,6 +31,7 @@ const App = () => {
 	const [loading, setLoading] = useState(false)
 	const [succsesAlert, setSuccsesAlert] = useState(null)
 	const [errorAlert, setErrorAlert] = useState(null)
+	const [postError, setPostError] = useState(null)
 
 	//стейт который содержит default ные значения но в дольнейшем этот стейт будет обновлять список (коротко говоря стейт который товечает за  отоброжения данных которые в массиве и которые присоеденяться в массив  )
 	const GetData = useCallback(async () => {
@@ -67,28 +68,49 @@ const App = () => {
 	}, [GetData])
 
 	const NewExpensesData = async (newData) => {
-		const response = await fetch(
-			'https://expense-tracker-f2bd2-default-rtdb.firebaseio.com/item.json',
-			{
-				method: 'POST',
-				body: JSON.stringify(newData),
-				Headers: {
-					'Content-type': 'application/json',
+		try {
+			const response = await fetch(
+				'https://expense-tracker-f2bd2-default-rtdb.firebaseio.com/item.json',
+				{
+					method: 'POST',
+					body: JSON.stringify(newData),
+					Headers: {
+						'Content-type': 'application/json',
+					},
 				},
-			},
-		)
-		const result = await response.json()
-		GetData()
-		setSuccsesAlert({ message: 'data added successfully' })
-		console.log(result)
+			)
+			if (!response.ok) {
+				throw new Error('failed to send data')
+			}
+			const result = await response.json()
+			GetData()
+			setSuccsesAlert({ message: 'data added successfully' })
+			console.log(result)
+		} catch (error) {
+			setPostError(error.message)
+		}
 	}
 
 	// функция которая получает данные из newExpenses и добовляет его в стейт (expenses) с помошью функции (setExpenses) стейта который обновляет стейт(сообщает реакт что стейт обновился) она получает данные с помошью поднятия данных(lifting up )
 
 	return (
 		<div>
-			{succsesAlert && <SuccsesAlert succsesAlert={succsesAlert} setSuccsesAlert={setSuccsesAlert} />}
-			{errorAlert && <ErrorAlert errorAlert={errorAlert} setErrorAlert={setErrorAlert}/>}
+			{succsesAlert && (
+				<SuccsesAlert
+					succsesAlert={succsesAlert}
+					setSuccsesAlert={setSuccsesAlert}
+				/>
+			)}
+			{errorAlert && (
+				<ErrorAlert
+					errorAlert={errorAlert}
+					setErrorAlert={setErrorAlert}
+				/>
+			)}
+			{postError && <ErrorAlert
+					errorAlert={postError}
+					setErrorAlert={setPostError}
+				/>}
 			<NewExpenses newData={NewExpensesData} />
 			{/*тут мы отдаем с помощью пропсов функция которая поднимает данные */}
 			<Expenses loading={loading} items={expenses} />{' '}

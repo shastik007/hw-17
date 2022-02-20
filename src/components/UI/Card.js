@@ -6,7 +6,6 @@ import './Card.css';
 
 const Card = (props) => {
   const classes = 'card ' + props.className; // делаем уникальный класс для reusebleности
-
   return <div className={classes}>{props.children}</div>;// сам блок для получения children и создания карточки (можно сказать это  обертка для  карт)
 };
 
