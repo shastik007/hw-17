@@ -27,7 +27,7 @@ const INIT_DATA = [
 
 // этот компонент получает данные от дочерних компонентов и добовляет его в свой пропс (точнее в массив чтоб в дольнейшем сообщать браузеру что если стейт обновиться реакту нужно обновляться)
 const App = () => {
-	const [expenses, setExpenses] = useState(INIT_DATA)
+	const [expenses, setExpenses] = useState([])
 	const [loading, setLoading] = useState(false)
 	const [succsesAlert, setSuccsesAlert] = useState(null)
 	const [errorAlert, setErrorAlert] = useState(null)
