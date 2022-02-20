@@ -32,7 +32,11 @@ const ExpenseForm = (props) => {
 			date: new Date(date),
 		}
 		// console.log(expensesData);
-		props.onSaveExpensesData(expensesData) // это функция которая взято из пропсов служит для поднятия данных материнский компонент
+		props.onSaveExpensesData(expensesData)
+		setTitle('')
+		setAmount('')
+		setDate('')
+		 // это функция которая взято из пропсов служит для поднятия данных материнский компонент
 	}
 
 	return (
