@@ -25,18 +25,22 @@ const ExpenseForm = (props) => {
 
 	const submitHandler = (event) => {
 		// function для submit (когда происходит сабмит все состояния Input внутри формы собираються в объект и происходит поднятия состояния )
-		event.preventDefault()
-		const expensesData = {
-			title: title,
-			amount: Number(amount),
-			date: new Date(date),
+		if (amount && date && title) {
+			event.preventDefault()
+			const expensesData = {
+				title: title,
+				amount: Number(amount),
+				date: new Date(date),
+			}
+			// console.log(expensesData);
+			props.onSaveExpensesData(expensesData)
+			setTitle('')
+			setAmount('')
+			setDate('')
+		}else{
+			alert('не все поля заполнены')
 		}
-		// console.log(expensesData);
-		props.onSaveExpensesData(expensesData)
-		setTitle('')
-		setAmount('')
-		setDate('')
-		 // это функция которая взято из пропсов служит для поднятия данных материнский компонент
+		// это функция которая взято из пропсов служит для поднятия данных материнский компонент
 	}
 
 	return (
